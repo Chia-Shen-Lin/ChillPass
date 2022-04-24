@@ -1,5 +1,11 @@
 package ManagerApp;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import javafx.application.Application;
 // import javafx.scene.paint.Color; 
 import javafx.event.ActionEvent;
@@ -23,7 +29,7 @@ public class LoginPage extends Application implements EventHandler<ActionEvent> 
 	Text PassLabel = new Text("Password: ");
 	PasswordField PassInput = new PasswordField();
 	Button LoginButton = new Button("Login");
-	Button ExitButton = new Button("Register/Reset");
+	Button RButton = new Button("Register/Reset");
 	Alert alert = new Alert(AlertType.ERROR);
 	Alert success = new Alert(AlertType.INFORMATION);
 	Stage first = new Stage();
@@ -55,7 +61,7 @@ public class LoginPage extends Application implements EventHandler<ActionEvent> 
 
 		h1.getChildren().addAll(UserLabel, UserInput);
 		h2.getChildren().addAll(PassLabel, PassInput);
-		h3.getChildren().addAll(LoginButton, ExitButton);
+		h3.getChildren().addAll(LoginButton, RButton);
 
 		vlayout.getChildren().addAll(h1, h2, h3);
 
@@ -64,50 +70,82 @@ public class LoginPage extends Application implements EventHandler<ActionEvent> 
 		primaryStage.show();
 
 		LoginButton.setOnAction(this::handle);
-		ExitButton.setOnAction(this::handle);
+		RButton.setOnAction(this::handle);
 
 	}
 
 	@Override
 	public void handle(ActionEvent event) {
 		// TODO Auto-generated method stub
-		if (event.getSource() == LoginButton) {
+		String Masteruser = "";
+		String Masterpass = "";
+		if (event.getSource() == LoginButton || event.getSource() == RButton) {
+			try {
+				Connection MasterLogin = DriverManager.getConnection("jdbc:mysql:///chillpass", "admin", "admin");
+//				PreparedStatement st = MasterLogin.prepareStatement(
+//						"Select username, password from masteraccount where username=? and password=?");
+//				st.setString(1, Masteruser);
+//				st.setString(2, Masterpass);
+				Statement st = MasterLogin.createStatement();
+				String q = "SELECT USERID, USERNAME, PASSWORD FROM MASTERACCOUNT";
+				ResultSet rs = st.executeQuery(q);
+				rs.next();
+				Masteruser = rs.getString(2);
+				Masterpass = rs.getString(3);
+
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			String username = UserInput.getText();
 			String password = PassInput.getText();
-			if (!username.equals(MasterAccount.username) || !password.equals(MasterAccount.password)) {
+			if (!username.equals(Masteruser) || !password.equals(Masterpass)) {
 				alert.showAndWait();
 				return;
 			} else {
-				first.close();
-				Stage c = new Stage();
-				try {
-					new CredentialsPage().start(c);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				if (event.getSource() == LoginButton) {
+					first.close();
+					Stage c = new Stage();
+					try {
+						new CredentialsPage().start(c);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} else if (event.getSource() == RButton) {
+					first.close();
+					Stage c = new Stage();
+					try {
+						new RegisterPage().start(c);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 				// Application.launch(CredentialsPage.class);
 				// success.showAndWait();
 				// return;
 			}
-
-		} else {
-			String username = UserInput.getText();
-			String password = PassInput.getText();
-			if (!username.equals(MasterAccount.username) || !password.equals(MasterAccount.password)) {
-				alert.showAndWait();
-				return;
-			} else {
-				first.close();
-				Stage c = new Stage();
-				try {
-					new RegisterPage().start(c);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
 		}
+
+//		} else if (event.getSource() == RButton) {
+//			
+//			String username = UserInput.getText();
+//			String password = PassInput.getText();
+//			if (!username.equals(Masteruser) || !password.equals(Masterpass)) {
+//				alert.showAndWait();
+//				return;
+//			} else {
+//				first.close();
+//				Stage c = new Stage();
+//				try {
+//					new RegisterPage().start(c);
+//				} catch (Exception e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
+//		}
 
 	}
 
