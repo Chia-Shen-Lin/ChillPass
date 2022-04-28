@@ -29,7 +29,8 @@ public class LoginPage extends Application implements EventHandler<ActionEvent> 
 	Text PassLabel = new Text("Password: ");
 	PasswordField PassInput = new PasswordField();
 	Button LoginButton = new Button("Login");
-	Button RButton = new Button("Register/Reset");
+	Button CButton = new Button("Change username/password");
+	Button RButton = new Button("Register new account");
 	Alert alert = new Alert(AlertType.ERROR);
 	Alert success = new Alert(AlertType.INFORMATION);
 	Stage first = new Stage();
@@ -61,7 +62,7 @@ public class LoginPage extends Application implements EventHandler<ActionEvent> 
 
 		h1.getChildren().addAll(UserLabel, UserInput);
 		h2.getChildren().addAll(PassLabel, PassInput);
-		h3.getChildren().addAll(LoginButton, RButton);
+		h3.getChildren().addAll(LoginButton, RButton, CButton);
 
 		vlayout.getChildren().addAll(h1, h2, h3);
 
@@ -77,9 +78,10 @@ public class LoginPage extends Application implements EventHandler<ActionEvent> 
 	@Override
 	public void handle(ActionEvent event) {
 		// TODO Auto-generated method stub
+		int MasterID = 0;
 		String Masteruser = "";
 		String Masterpass = "";
-		if (event.getSource() == LoginButton || event.getSource() == RButton) {
+		if (event.getSource() == LoginButton || event.getSource() == CButton) {
 			try {
 				Connection MasterLogin = DriverManager.getConnection("jdbc:mysql:///chillpass", "admin", "admin");
 //				PreparedStatement st = MasterLogin.prepareStatement(
@@ -90,6 +92,7 @@ public class LoginPage extends Application implements EventHandler<ActionEvent> 
 				String q = "SELECT USERID, USERNAME, PASSWORD FROM MASTERACCOUNT";
 				ResultSet rs = st.executeQuery(q);
 				rs.next();
+				MasterID = rs.getInt(1);
 				Masteruser = rs.getString(2);
 				Masterpass = rs.getString(3);
 
@@ -104,10 +107,13 @@ public class LoginPage extends Application implements EventHandler<ActionEvent> 
 				return;
 			} else {
 				if (event.getSource() == LoginButton) {
+					MasterAccount.ID = MasterID;
+					MasterAccount.username = Masteruser;
+					MasterAccount.password = Masterpass;
 					first.close();
 					Stage c = new Stage();
 					try {
-						new CredentialsPage().start(c);
+						new ViewCredentials().start(c);
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
