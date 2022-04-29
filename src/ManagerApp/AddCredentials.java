@@ -1,5 +1,11 @@
 package ManagerApp;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -67,6 +73,25 @@ public class AddCredentials extends Application implements EventHandler<ActionEv
 	public void handle(ActionEvent event) {
 		// TODO Auto-generated method stub
 		if (event.getSource() == FinishButton) {
+			Connection add;
+			try {
+				String website = ServiceInput.getText();
+				String username = UserInput.getText();
+				String password = PassInput.getText();
+				add = DriverManager.getConnection("jdbc:mysql://localhost:3306/chillpass", "admin", "admin");
+				Statement st = add.createStatement();
+				String q = "INSERT INTO pass (website, username, password)" + "VALUES (?, ?, ?)";
+				PreparedStatement preparedStatement = add.prepareStatement(q);
+				preparedStatement.setString(1, website);
+				preparedStatement.setString(2, username);
+				preparedStatement.setString(3, password);
+				preparedStatement.executeUpdate();
+
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
 			addition.close();
 			Stage c = new Stage();
 			try {

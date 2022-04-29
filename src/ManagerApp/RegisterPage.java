@@ -94,11 +94,11 @@ public class RegisterPage extends Application implements EventHandler<ActionEven
 					link = DriverManager.getConnection("jdbc:mysql://localhost:3306/chillpass", "admin", "admin");
 					PreparedStatement pt = link.prepareStatement("Update masteraccount set password=? where UserID=?");
 					pt.setString(1, conpass);
-					pt.setInt(2, 12790);
+					pt.setInt(2, 1);
 					pt.executeUpdate();
 					PreparedStatement pt2 = link.prepareStatement("Update masteraccount set username=? where UserID=?");
 					pt2.setString(1, conuser);
-					pt2.setInt(2, 12790);
+					pt2.setInt(2, 1);
 					pt2.executeUpdate();
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block

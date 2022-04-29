@@ -29,8 +29,8 @@ public class LoginPage extends Application implements EventHandler<ActionEvent> 
 	Text PassLabel = new Text("Password: ");
 	PasswordField PassInput = new PasswordField();
 	Button LoginButton = new Button("Login");
-	Button CButton = new Button("Change username/password");
-	Button RButton = new Button("Register new account");
+	// Button CButton = new Button("Reset Account");
+	Button RButton = new Button("Register/Reset account");
 	Alert alert = new Alert(AlertType.ERROR);
 	Alert success = new Alert(AlertType.INFORMATION);
 	Stage first = new Stage();
@@ -62,7 +62,7 @@ public class LoginPage extends Application implements EventHandler<ActionEvent> 
 
 		h1.getChildren().addAll(UserLabel, UserInput);
 		h2.getChildren().addAll(PassLabel, PassInput);
-		h3.getChildren().addAll(LoginButton, RButton, CButton);
+		h3.getChildren().addAll(LoginButton, RButton);
 
 		vlayout.getChildren().addAll(h1, h2, h3);
 
@@ -81,9 +81,10 @@ public class LoginPage extends Application implements EventHandler<ActionEvent> 
 		int MasterID = 0;
 		String Masteruser = "";
 		String Masterpass = "";
-		if (event.getSource() == LoginButton || event.getSource() == CButton) {
+		if (event.getSource() == LoginButton || event.getSource() == RButton) {
 			try {
-				Connection MasterLogin = DriverManager.getConnection("jdbc:mysql:///chillpass", "admin", "admin");
+				Connection MasterLogin = DriverManager.getConnection("jdbc:mysql://localhost:3306/chillpass", "admin",
+						"admin");
 //				PreparedStatement st = MasterLogin.prepareStatement(
 //						"Select username, password from masteraccount where username=? and password=?");
 //				st.setString(1, Masteruser);
